@@ -19,12 +19,12 @@ type Loop struct {
 	next screen.Texture // текстура, яка зараз формується
 	prev screen.Texture // текстура, яка була відправленя останнього разу у Receiver
 
-	mq messageQueue
-	stopped chan struct {}
+	mq      messageQueue
+	stopped chan struct{}
 	stopReq bool
 }
 
-var size = image.Pt(400, 400)
+var size = image.Pt(800, 800)
 
 // Start запускає цикл подій. Цей метод потрібно запустити до того, як викликати на ньому будь-які інші методи.
 func (l *Loop) Start(s screen.Screen) {
@@ -64,8 +64,8 @@ func (l *Loop) StopAndWait() {
 
 // TODO: реалізувати власну чергу повідомлень.
 type messageQueue struct {
-	ops []Operation
-	mu sync.Mutex
+	ops     []Operation
+	mu      sync.Mutex
 	blocked chan struct{}
 }
 
@@ -80,7 +80,7 @@ func (mq *messageQueue) push(op Operation) {
 	}
 }
 
-func (mq *messageQueue) pull() Operation { 
+func (mq *messageQueue) pull() Operation {
 	mq.mu.Lock()
 	defer mq.mu.Unlock()
 
@@ -97,9 +97,9 @@ func (mq *messageQueue) pull() Operation {
 	return op
 }
 
-func (mq *messageQueue) isEmpty() (bool) { 
+func (mq *messageQueue) isEmpty() bool {
 	mq.mu.Lock()
 	defer mq.mu.Unlock()
 
-	return len(mq.ops) == 0 
- }
+	return len(mq.ops) == 0
+}
