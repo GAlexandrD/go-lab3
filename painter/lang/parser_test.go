@@ -1,11 +1,10 @@
-package test
+package lang
 
 import (
 	"strings"
 	"testing"
 
 	"github.com/roman-mazur/architecture-lab-3/painter"
-	"github.com/roman-mazur/architecture-lab-3/painter/lang"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,7 +58,7 @@ func TestRecognizeOperations(t *testing.T) {
 			operation: painter.UpdateOp,
 		},
 	}
-	parser := lang.Parser{}
+	parser := Parser{}
 	for i := 0; i < len(testCases); i++ {
 		testCase := testCases[i]
 		op, err := parser.Parse(strings.NewReader(testCase.input))
@@ -78,7 +77,7 @@ func TestMultipleOperations(t *testing.T) {
 			operations: []painter.Operation{painter.GreenFill{}, painter.WhiteFill{}, painter.AddT{}, painter.BgRect{}, painter.UpdateOp},
 		},
 	}
-	parser := lang.Parser{}
+	parser := Parser{}
 	for i := 0; i < len(testCases); i++ {
 		testCase := testCases[i]
 		ops, err := parser.Parse(strings.NewReader(testCase.input))
@@ -96,18 +95,18 @@ func TestInvalidInputs(t *testing.T) {
 		{
 			test:  "multiple",
 			input: "fdgdfgfdgdf",
-			err:   lang.UnknownOperationError{},
+			err:   UnknownOperationError{},
 		}, {
 			test:  "multiple",
 			input: "bgrect 3 4",
-			err:   lang.NotEnoughArgsError{},
+			err:   NotEnoughArgsError{},
 		}, {
 			test:  "multiple",
 			input: "bgrect fsdfds 4 fsd 3",
-			err:   lang.InvalidArgsError{},
+			err:   InvalidArgsError{},
 		},
 	}
-	parser := lang.Parser{}
+	parser := Parser{}
 	for i := 0; i < len(testCases); i++ {
 		testCase := testCases[i]
 		_, err := parser.Parse(strings.NewReader(testCase.input))
