@@ -29,7 +29,10 @@ var UpdateOp = updateOp{}
 
 type updateOp struct{}
 
-func (op updateOp) Do(t screen.Texture) bool { return true }
+func (op updateOp) Do(t screen.Texture) bool {
+	drawAll(t)
+	return true
+}
 
 // OperationFunc використовується для перетворення функції оновлення текстури в Operation.
 type OperationFunc func(t screen.Texture)
@@ -55,7 +58,6 @@ type WhiteFill struct{}
 
 func (op WhiteFill) Do(t screen.Texture) bool {
 	backgroundColor = color.White
-	drawAll(t)
 	return false
 }
 
@@ -64,7 +66,6 @@ type GreenFill struct{}
 
 func (op GreenFill) Do(t screen.Texture) bool {
 	backgroundColor = color.RGBA{G: 0xff, A: 0xff}
-	drawAll(t)
 	return false
 }
 
@@ -80,7 +81,6 @@ func (op BgRect) Do(t screen.Texture) bool {
 	rect.Min.Y = ys
 	rect.Max.X = xf
 	rect.Max.Y = yf
-	drawAll(t)
 	return false
 }
 
@@ -89,7 +89,6 @@ type AddT struct{ X, Y float32 }
 func (op AddT) Do(t screen.Texture) bool {
 	x := T{X: op.X, Y: op.Y}
 	Ts = append(Ts, x)
-	drawAll(t)
 	return false
 }
 
@@ -100,7 +99,6 @@ func (op MoveAll) Do(t screen.Texture) bool {
 		Ts[i].X += op.X
 		Ts[i].Y += op.Y
 	}
-	drawAll(t)
 	return false
 }
 
