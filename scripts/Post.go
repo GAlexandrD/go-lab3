@@ -1,13 +1,15 @@
-package Post
+package main
 
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"strings"
+	"time"
 )
 
-func sendCommandToPainter(command string) error {
+func SendCommandToPainter(command string) error {
 	// Створюємо запит
 	req, err := http.NewRequest("POST", "http://localhost:17000", nil)
 	if err != nil {
@@ -31,4 +33,24 @@ func sendCommandToPainter(command string) error {
 	}
 
 	return nil
+}
+
+func MoveOnCircle(a int, r float64) {
+	x := r * math.Cos(float64(a))
+	y := r * math.Sin(float64(a))
+	SendCommandToPainter(fmt.Sprintf("move %f %f", x, y))
+	SendCommandToPainter("update")
+}
+
+func main() {
+	SendCommandToPainter("bgrect 0.25 0.25 0.75 0.75")
+	SendCommandToPainter("green")
+	SendCommandToPainter("figure 0.25 0.25")
+	var a = 0
+	var r float64 = 0.4
+	for a < 100 {
+		MoveOnCircle(a, r)
+		time.Sleep(200 * time.Millisecond)
+		a++
+	}
 }
