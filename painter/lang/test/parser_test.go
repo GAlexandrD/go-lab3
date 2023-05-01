@@ -1,51 +1,119 @@
 package test
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/roman-mazur/architecture-lab-3/painter"
 	"github.com/roman-mazur/architecture-lab-3/painter/lang"
 	"github.com/stretchr/testify/assert"
-	"strings"
-	"testing"
 )
 
-type TestCase struct {
-	input     string
-	command   string
-	operation painter.Operation
+type TCRecognOp struct {
+	test       string
+	input      string
+	operation	 painter.Operation
 }
 
-func TestMain(t *testing.T) {
-	testCases := []TestCase{
+type TCMultipleOps struct {
+	test string
+	input string
+	operations []painter.Operation
+}
+
+type TCInvalidInput struct {
+	test string
+	input string
+	err error
+}
+
+func TestRecognizeOperations(t *testing.T) {
+	testCases := []TCRecognOp{
 		{
-			input:     "white fill",
-			command:   "white",
-			operation: painter.OperationFunc(painter.WhiteFill),
+			test: "green",
+			input: "green",
+			operation: painter.GreenFill{},
 		}, {
-			input:     "green fill",
-			command:   "green",
-			operation: painter.OperationFunc(painter.GreenFill),
+			test: "figure",
+			input: "figure 0.5 0.4",
+			operation: painter.AddT{},
 		}, {
-			input:     "update",
-			command:   "update",
+			test: "move",
+			input: "move 0.5 0.2",
+			operation: painter.MoveAll{},
+		},{
+			test: "bgrect",
+			input: "bgrect 0.3 0.2 0.5 0.7",
+			operation: painter.BgRect{},
+		},{
+			test: "reset",
+			input: "reset",
+			operation: painter.Reset{},
+		},{
+			test: "white",
+			input: "white",
+			operation: painter.WhiteFill{},
+		},{
+			test: "update",
+			input: "update",
 			operation: painter.UpdateOp,
-		}, {
-			input:     "move 12 12",
-			command:   "move",
-			operation: painter.MoveAll(12, 12),
 		},
 	}
+	parser := lang.Parser{}
 	for i := 0; i < len(testCases); i++ {
 		testCase := testCases[i]
-		testParserTestCase(testCase, t)
+		op, err := parser.Parse(strings.NewReader(testCase.input))
+		if err != nil {
+			t.Fatalf("Operation %s wasn't recognized", testCase.test)
+		}
+		assert.IsType(t, testCase.operation, op[0])
 	}
 }
 
-func testParserTestCase(testCase TestCase, t *testing.T) {
+func TestMultipleOperations(t *testing.T) {
+	testCases := []TCMultipleOps{
+		{
+			test: "multiple",
+			input: "green\nwhite\nfigure 0.5 0.5\nbgrect 0.2 0.2 0.3 0.3\nupdate",
+			operations: []painter.Operation{painter.GreenFill{}, painter.WhiteFill{},painter.AddT{}, painter.BgRect{}, painter.UpdateOp},
+		},
+	}
 	parser := lang.Parser{}
-	t.Run(testCase.input, func(t *testing.T) {
-		op, _ := parser.Parse(strings.NewReader(testCase.input))
+	for i := 0; i < len(testCases); i++ {
+		testCase := testCases[i]
+		ops, err := parser.Parse(strings.NewReader(testCase.input))
+		if err != nil {
+			t.Fatalf("Error accured in %s test: %s", testCase.test, err.Error())
+		}
+		for i := range ops {
+			assert.IsType(t, testCase.operations[i], ops[i])
+		}
+	}
+}
 
-		assert.IsType(t, testCase.operation, op[0])
-	})
-
+func TestInvalidInputs(t *testing.T) {
+	testCases := []TCInvalidInput{
+		{
+			test: "multiple",
+			input: "fdgdfgfdgdf",
+			err: lang.UnknownOperationError{},
+		}, {
+			test: "multiple",
+			input: "bgrect 3 4",
+			err: lang.NotEnoughArgsError{},
+		}, {
+			test: "multiple",
+			input: "bgrect fsdfds 4 fsd 3",
+			err: lang.InvalidArgsError{},
+		}, 
+	}
+	parser := lang.Parser{}
+	for i := 0; i < len(testCases); i++ {
+		testCase := testCases[i]
+		_, err := parser.Parse(strings.NewReader(testCase.input))
+		if err == nil {
+			t.Fatalf("Error wasn't catch in test %s", testCase.test)
+		}
+		assert.IsType(t, testCase.err, err)
+	}
 }

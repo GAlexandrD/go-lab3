@@ -51,54 +51,64 @@ type T struct {
 var Ts []T
 
 // WhiteFill зафарбовує тестуру у білий колір. Може бути викоистана як Operation через OperationFunc(WhiteFill).
-func WhiteFill(t screen.Texture) {
+type WhiteFill struct {}
+
+func (op WhiteFill) Do(t screen.Texture) bool {
 	backgroundColor = color.White
 	drawAll(t)
+	return false
 }
+
 
 // GreenFill зафарбовує тестуру у зелений колір. Може бути викоистана як Operation через OperationFunc(GreenFill).
-func GreenFill(t screen.Texture) {
+type GreenFill struct {}
+
+func (op GreenFill) Do(t screen.Texture) bool {
 	backgroundColor = color.RGBA{G: 0xff, A: 0xff}
 	drawAll(t)
+	return false
 }
 
-func BgRect(x1, y1, x2, y2 float32) OperationFunc {
-	return func(t screen.Texture) {
-		b := t.Bounds()
-		xs := int(x1 * float32(b.Dx()))
-		ys := int(y1 * float32(b.Dy()))
-		xf := int(x2 * float32(b.Dx()))
-		yf := int(y2 * float32(b.Dy()))
-		rect.Min.X = xs
-		rect.Min.Y = ys
-		rect.Max.X = xf
-		rect.Max.Y = yf
-		drawAll(t)
-	}
+type BgRect struct {X1, Y1, X2, Y2 float32}
+
+func (op BgRect) Do(t screen.Texture) bool {
+	b := t.Bounds()
+	xs := int(op.X1 * float32(b.Dx()))
+	ys := int(op.Y1 * float32(b.Dy()))
+	xf := int(op.X2 * float32(b.Dx()))
+	yf := int(op.Y2 * float32(b.Dy()))
+	rect.Min.X = xs
+	rect.Min.Y = ys
+	rect.Max.X = xf
+	rect.Max.Y = yf
+	drawAll(t)
+	return false
 }
 
-func AddT(x, y float32) OperationFunc {
-	return func(t screen.Texture) {
-		x := T{X: x, Y: y}
+type AddT struct {X, Y float32}
+func (op AddT) Do(t screen.Texture) bool {
+		x := T{X: op.X, Y: op.Y}
 		Ts = append(Ts, x)
 		drawAll(t)
-	}
+		return false
 }
 
-func MoveAll(x, y float32) OperationFunc {
-	return func(t screen.Texture) {
+type MoveAll struct {X, Y float32}
+func (op MoveAll) Do(t screen.Texture) bool {
 		for i := range Ts {
-			Ts[i].X += x
-			Ts[i].Y += y
+			Ts[i].X += op.X
+			Ts[i].Y += op.Y
 		}
 		drawAll(t)
-	}
+		return false
 }
 
-func Reset(t screen.Texture) {
+type Reset struct {}
+func (op Reset) Do(t screen.Texture) bool {
 	rect = image.Rect(0, 0, 0, 0)
 	backgroundColor = color.Black
 	Ts = []T{}
+	return false
 }
 
 func drawAll(t screen.Texture) {

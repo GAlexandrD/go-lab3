@@ -2,9 +2,7 @@ package lang
 
 import (
 	"bufio"
-	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 
@@ -23,8 +21,7 @@ func (p *Parser) Parse(in io.Reader) ([]painter.Operation, error) {
 		commandLine := scanner.Text()
 		op, err := getOperationFromString(commandLine) // parse the line to get Operation
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "An error occurred in one of the operations: %s \n", err.Error())
-			continue
+			return nil, err
 		}
 		res = append(res, op)
 	}
@@ -39,9 +36,9 @@ func getOperationFromString(commandString string) (painter.Operation, error) {
 
 	switch command {
 	case "white":
-		return painter.OperationFunc(painter.WhiteFill), nil
+		return painter.WhiteFill{}, nil
 	case "green":
-		return painter.OperationFunc(painter.GreenFill), nil
+		return painter.GreenFill{}, nil
 	case "update":
 		return painter.UpdateOp, nil
 	case "bgrect":
@@ -49,21 +46,21 @@ func getOperationFromString(commandString string) (painter.Operation, error) {
 		if err != nil {
 			return nil, err
 		}
-		return painter.OperationFunc(painter.BgRect(args[0], args[1], args[2], args[3])), nil
+		return painter.BgRect{ X1: args[0], Y1: args[1], X2:args[2], Y2:args[3] }, nil
 	case "figure":
 		args, err := checkAndParseArgs(2, strArgs)
 		if err != nil {
 			return nil, err
 		}
-		return painter.OperationFunc(painter.AddT(args[0], args[1])), nil
+		return painter.AddT{X:args[0], Y:args[1]}, nil
 	case "move":
 		args, err := checkAndParseArgs(2, strArgs)
 		if err != nil {
 			return nil, err
 		}
-		return painter.OperationFunc(painter.MoveAll(args[0], args[1])), nil
+		return painter.MoveAll{X:args[0], Y:args[1]}, nil
 	case "reset":
-		return painter.OperationFunc(painter.Reset), nil
+		return painter.Reset{}, nil
 	}
 	return nil, UnknownOperationError{}
 }
