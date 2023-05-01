@@ -10,8 +10,8 @@ import (
 )
 
 func TestLoop_Post(t *testing.T) {
-	var ( 
-		l Loop
+	var (
+		l  Loop
 		tr testReciever
 	)
 
@@ -25,7 +25,7 @@ func TestLoop_Post(t *testing.T) {
 	if tr.LastTexture != nil {
 		t.Fatal("Reciever got texture too early")
 	}
-	
+
 	l.StopAndWait()
 	tx, ok := tr.LastTexture.(*mockTexture)
 	if !ok {
@@ -45,9 +45,7 @@ func (tr *testReciever) Update(t screen.Texture) {
 	tr.LastTexture = t
 }
 
-
-
-type mockScreen struct {}
+type mockScreen struct{}
 
 func (m mockScreen) NewBuffer(p image.Point) (screen.Buffer, error) {
 	panic("not implemented")
@@ -61,7 +59,7 @@ func (m mockScreen) NewWindow(w *screen.NewWindowOptions) (screen.Window, error)
 	panic("not implemented")
 }
 
-type mockTexture struct{
+type mockTexture struct {
 	FillCnt int
 }
 
@@ -76,9 +74,8 @@ func (m *mockTexture) Bounds() image.Rectangle {
 }
 
 func (m *mockTexture) Upload(dp image.Point, src screen.Buffer, sr image.Rectangle) {
-	panic("not implemented") 
+	panic("not implemented")
 }
-
 
 func (m *mockTexture) Fill(dr image.Rectangle, src color.Color, op draw.Op) {
 	m.FillCnt++

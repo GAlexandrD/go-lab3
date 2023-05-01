@@ -51,7 +51,7 @@ type T struct {
 var Ts []T
 
 // WhiteFill зафарбовує тестуру у білий колір. Може бути викоистана як Operation через OperationFunc(WhiteFill).
-type WhiteFill struct {}
+type WhiteFill struct{}
 
 func (op WhiteFill) Do(t screen.Texture) bool {
 	backgroundColor = color.White
@@ -59,9 +59,8 @@ func (op WhiteFill) Do(t screen.Texture) bool {
 	return false
 }
 
-
 // GreenFill зафарбовує тестуру у зелений колір. Може бути викоистана як Operation через OperationFunc(GreenFill).
-type GreenFill struct {}
+type GreenFill struct{}
 
 func (op GreenFill) Do(t screen.Texture) bool {
 	backgroundColor = color.RGBA{G: 0xff, A: 0xff}
@@ -69,7 +68,7 @@ func (op GreenFill) Do(t screen.Texture) bool {
 	return false
 }
 
-type BgRect struct {X1, Y1, X2, Y2 float32}
+type BgRect struct{ X1, Y1, X2, Y2 float32 }
 
 func (op BgRect) Do(t screen.Texture) bool {
 	b := t.Bounds()
@@ -85,25 +84,28 @@ func (op BgRect) Do(t screen.Texture) bool {
 	return false
 }
 
-type AddT struct {X, Y float32}
+type AddT struct{ X, Y float32 }
+
 func (op AddT) Do(t screen.Texture) bool {
-		x := T{X: op.X, Y: op.Y}
-		Ts = append(Ts, x)
-		drawAll(t)
-		return false
+	x := T{X: op.X, Y: op.Y}
+	Ts = append(Ts, x)
+	drawAll(t)
+	return false
 }
 
-type MoveAll struct {X, Y float32}
+type MoveAll struct{ X, Y float32 }
+
 func (op MoveAll) Do(t screen.Texture) bool {
-		for i := range Ts {
-			Ts[i].X += op.X
-			Ts[i].Y += op.Y
-		}
-		drawAll(t)
-		return false
+	for i := range Ts {
+		Ts[i].X += op.X
+		Ts[i].Y += op.Y
+	}
+	drawAll(t)
+	return false
 }
 
-type Reset struct {}
+type Reset struct{}
+
 func (op Reset) Do(t screen.Texture) bool {
 	rect = image.Rect(0, 0, 0, 0)
 	backgroundColor = color.Black
