@@ -86,12 +86,12 @@ func AddT(x, y float32) OperationFunc {
 }
 
 func MoveAll(x, y float32) OperationFunc {
-	println(0)
 	return func(t screen.Texture) {
 		for i := range Ts {
 			Ts[i].X += x
 			Ts[i].Y += y
 		}
+		drawAll(t)
 	}
 }
 
@@ -105,7 +105,7 @@ func drawAll(t screen.Texture) {
 	t.Fill(t.Bounds(), backgroundColor, draw.Src)
 	if rect.Max.X != rect.Min.X || rect.Max.Y != rect.Min.Y {
 		t.Fill(rect, color.Black, draw.Src)
-	}	
+	}
 	for i := range Ts {
 		drawT(Ts[i].X, Ts[i].Y, t)
 	}
