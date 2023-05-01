@@ -43,12 +43,11 @@ func MoveOnCircle(a int, r float64) {
 }
 
 func main() {
-	SendCommandToPainter("bgrect 0.25 0.25 0.75 0.75")
 	SendCommandToPainter("green")
-	SendCommandToPainter("figure 0.25 0.25")
+	SendCommandToPainter("figure 0.4 0.2")
 	var a = 0
-	var r float64 = 0.4
-	for a < 100 {
+	var r float64 = 0.2
+	for {
 		MoveOnCircle(a, r)
 		time.Sleep(200 * time.Millisecond)
 		a++
