@@ -39,17 +39,17 @@ func TestLoop_Post_Single(t *testing.T) {
 		tr testReciever
 	)
 	l.Receiver = &tr
-	isDone := false
+	op := mockOperation{}
 
 	l.Start(mockScreen{})
-	l.Post(OperationFunc(mockOperation(&isDone)))
+	l.Post(&op)
 	l.StopAndWait()
 
 	if len(l.mq.ops) != 0 {
 		t.Fatal("message queue still have operations after StopAndWait call")
 	}
 
-	if !isDone {
+	if !op.isDone {
 		t.Fatal("Operation wasn't executed")
 	}
 
@@ -64,22 +64,22 @@ func TestLoop_Post_Multiple(t *testing.T) {
 		tr testReciever
 	)
 	l.Receiver = &tr
-	isDone := [3]bool{}
+	ops := [5]mockOperation{{}, {isUpdate: true}, {}, {}, {isUpdate: true}}
 
 	l.Start(mockScreen{})
-	l.Post(OperationFunc(mockOperation(&isDone[0])))
-	l.Post(UpdateOp)
-	l.Post(OperationFunc(mockOperation(&isDone[1])))
-	l.Post(OperationFunc(mockOperation(&isDone[2])))
-	l.Post(UpdateOp)
+	l.Post(&ops[0])
+	l.Post(&ops[1])
+	l.Post(&ops[2])
+	l.Post(&ops[3])
+	l.Post(&ops[4])
 	l.StopAndWait()
 
 	if len(l.mq.ops) != 0 {
 		t.Fatal("message queue still have operations after StopAndWait call")
 	}
 
-	for i := range isDone {
-		if !isDone[i] {
+	for i := range ops {
+		if !ops[i].isDone {
 			t.Fatal("Operation wasn't executed")
 		}
 	}
@@ -99,10 +99,17 @@ func (tr *testReciever) Update(t screen.Texture) {
 	tr.callsCount++
 }
 
-func mockOperation(flag *bool) OperationFunc{
-	return func(t screen.Texture) {
-		*flag = true
+type mockOperation struct {
+	isDone   bool
+	isUpdate bool
+}
+
+func (m *mockOperation) Do(t screen.Texture) bool {
+	m.isDone = true
+	if m.isUpdate {
+		return true
 	}
+	return false
 }
 
 type mockScreen struct{}

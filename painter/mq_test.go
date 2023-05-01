@@ -19,7 +19,7 @@ func TestMQ_Push(t *testing.T) {
 	mq.push(mockOp{})
 	mq.push(mockOp{})
 	mq.push(mockOp{})
-	
+
 	if len(mq.ops) != 5 {
 		t.Fatal("elements wasn't added")
 	}
@@ -28,7 +28,7 @@ func TestMQ_Push(t *testing.T) {
 func TestMQ_Pull(t *testing.T) {
 	var mq = messageQueue{}
 	mq.push(mockOp{})
-	
+
 	firstEl := mq.ops[0]
 	pulled := mq.pull()
 	if pulled != firstEl {
@@ -45,7 +45,7 @@ func TestMQ_Pull(t *testing.T) {
 
 	secondEl := mq.ops[1]
 	mq.pull()
-	pulledSec := mq.pull() 
+	pulledSec := mq.pull()
 
 	if len(mq.ops) != 2 {
 		t.Fatal("elements wasn't deleted")
@@ -62,7 +62,7 @@ func TestMQ_IsEmpty(t *testing.T) {
 	mq.push(mockOp{})
 	mq.push(mockOp{})
 	mq.push(mockOp{})
-	
+
 	mq.pull()
 	mq.pull()
 
@@ -76,6 +76,6 @@ func TestMQ_IsEmpty(t *testing.T) {
 	}
 }
 
+type mockOp struct{}
 
-type mockOp struct {}
 func (mo mockOp) Do(t screen.Texture) bool { return false }
