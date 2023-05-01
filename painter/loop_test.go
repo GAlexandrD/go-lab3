@@ -33,7 +33,7 @@ func TestLoop_Post(t *testing.T) {
 	}
 
 	if tx.FillCnt != 2 {
-		t.Fatal("wrong amount of fill calls")
+		t.Fatal("wrong amount of fill calls", tx.FillCnt)
 	}
 }
 

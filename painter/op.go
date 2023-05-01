@@ -102,8 +102,10 @@ func Reset(t screen.Texture) {
 }
 
 func drawAll(t screen.Texture) {
-	t.Fill(t.Bounds(), backgroundColor, screen.Src)
-	t.Fill(rect, color.Black, screen.Src)
+	t.Fill(t.Bounds(), backgroundColor, draw.Src)
+	if rect.Max.X != rect.Min.X || rect.Max.Y != rect.Min.Y {
+		t.Fill(rect, color.Black, draw.Src)
+	}	
 	for i := range Ts {
 		drawT(Ts[i].X, Ts[i].Y, t)
 	}
