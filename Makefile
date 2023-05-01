@@ -3,9 +3,9 @@ default: out/example
 clean:
 	rm -rf out
 
-test: *_test.go
+test:
 	go test ./...
 
-out/painter: 
+out/painter: cmd/painter/main.go
 	mkdir -p out
 	go build -o out/painter ./cmd/painter
