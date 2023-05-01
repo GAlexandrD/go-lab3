@@ -4,7 +4,8 @@ clean:
 	rm -rf out
 
 test: *.go
-	go test ./...
+	go test ./painter
+	go test ./painter/lang/test
 
 out/painter: 
 	mkdir -p out
