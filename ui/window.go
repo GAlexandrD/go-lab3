@@ -142,8 +142,8 @@ func (pw *Visualizer) drawDefaultUI() {
 	pw.w.Fill(pw.sz.Bounds(), color.Black, draw.Src) // Фон.
 
 	// TODO: Змінити колір фону та додати відображення фігури у вашому варіанті.
-	hRect := image.Rect(pw.pos.X-200, pw.pos.Y-100, pw.pos.X+200, pw.pos.Y)
-	vRect := image.Rect(pw.pos.X-50, pw.pos.Y, pw.pos.X+50, pw.pos.Y+300)
+	hRect := image.Rect(pw.pos.X-100, pw.pos.Y-100, pw.pos.X+100, pw.pos.Y)
+	vRect := image.Rect(pw.pos.X-50, pw.pos.Y, pw.pos.X+50, pw.pos.Y+100)
 	pw.w.Fill(hRect, color.RGBA{255, 255, 0, 255}, draw.Src)
 	pw.w.Fill(vRect, color.RGBA{255, 255, 0, 255}, draw.Src)
 

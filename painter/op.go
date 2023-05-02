@@ -125,8 +125,8 @@ func drawT(x, y float32, t screen.Texture) {
 	w, h := float32(t.Bounds().Dx()), float32(t.Bounds().Dy())
 	x1 := int(x * w)
 	y1 := int(y * h)
-	hRect := image.Rect(x1-200, y1-100, x1+200, y1)
-	vRect := image.Rect(x1-50, y1, x1+50, y1+300)
+	hRect := image.Rect(x1-100, y1-100, x1+100, y1)
+	vRect := image.Rect(x1-50, y1, x1+50, y1+100)
 	t.Fill(hRect, color.RGBA{255, 255, 0, 255}, draw.Src)
 	t.Fill(vRect, color.RGBA{255, 255, 0, 255}, draw.Src)
 }
